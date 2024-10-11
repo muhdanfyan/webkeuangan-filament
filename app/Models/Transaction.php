@@ -18,8 +18,25 @@ class Transaction extends Model
         'image'
     ];
 
+    
+
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public static function totalPemasukan(): int
+    {
+        return self::whereHas('category', function ($query) {
+            $query->where('is_expense', true);
+        })->sum('amount');
+    }
+
+    public static function totalPengeluaran(): int
+    {
+        return self::whereHas('category', function ($query) {
+            $query->where('is_expense', false);
+        })->sum('amount');
     }
 }
